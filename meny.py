@@ -16,7 +16,7 @@ BLACK = (0, 0, 0)
 GRAY = (200, 200, 200)
 
 # Шрифты
-font = pygame.font.SysFont('Arial', 30)
+font = pygame.font.SysFont('Arial', 25)
 
 # Уровни игры
 levels = ['Уровень 1', 'Уровень 2', 'Уровень 3']
@@ -43,7 +43,8 @@ class Button:
 def start_level_1():
     print("Запуск уровня 1")
     subprocess.Popen(["python", "Level 1.py"])  # Запуск level_1.py
-
+def start_bonus_lvl():
+    subprocess.Popen(["python", "Bonus_lvl.py"])
 def go_back():
     global current_screen
     current_screen = 'main_menu'
@@ -88,7 +89,8 @@ def level_select_menu():
     level_buttons = [
         Button(150, 150, 200, 50, "Уровень 1", start_level_1),
         Button(150, 220, 200, 50, "Уровень 2", None),  # Заглушка для уровня 2
-        Button(150, 290, 200, 50, "Уровень 3", None),  # Заглушка для уровня 3
+        Button(150, 290, 200, 50, "Уровень 3", None),
+        Button(150, 80, 200, 50, "Бонусный уровень", start_bonus_lvl)
     ]
     
     # Кнопка назад размещается ниже всех кнопок
