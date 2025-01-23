@@ -1,7 +1,7 @@
 import pygame
 import random
 import math
-
+import subprocess
 class Button:
     def __init__(self, x, y, width, height, color, text, text_color, font_size=30):
         # Исправлено: метод инициализации теперь __init__
@@ -48,6 +48,7 @@ def before():
     button_time2 = Button(400, 390, 20, 20, (0, 0, 0), "v", (255, 255, 255))
 
     button_play = Button(145, 430, 200, 50, (255, 0, 0), "Играть", (255, 255, 255))
+    button_meny = Button(0, 0, 100, 25, (255, 0, 0), "В меню", (255, 255, 255))
     running = True
     while running:
         for event in pygame.event.get():
@@ -55,6 +56,9 @@ def before():
                 running = False
 
             if event.type == pygame.MOUSEBUTTONDOWN:
+                if button_meny.is_clicked(event.pos):
+                    running = False
+                    subprocess.Popen(["python", "meny.py"])
                 if button_s1.is_clicked(event.pos):
                     if sr >= 99:
                         sr = sr
@@ -150,7 +154,7 @@ def before():
         button_time2.draw(screen)
 
         button_play.draw(screen)
-
+        button_meny.draw(screen)
         pygame.display.update()
 
 
@@ -160,17 +164,26 @@ def before():
 
 
 def after(BALL_RADIUS, BALL_COUNT, BALL_SPEED, GAME_DURATION):
+    import pygame
+    import random
+    import math
+
     pygame.init()
+
+    # Constants
     WINDOW_WIDTH = 500
     WINDOW_HEIGHT = 500
     BALL_RADIUS = BALL_RADIUS
     BALL_COUNT = BALL_COUNT
-    BALL_SPEED = BALL_SPEED
+    BALL_SPEED = BALL_SPEED  # Pixels per second
     FPS = 120
-    GAME_DURATION = GAME_DURATION
+    GAME_DURATION = GAME_DURATION  # in seconds
     TRAIL_LENGTH = 10
+
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-    pygame.display.set_caption("bonus lvl")
+    pygame.display.set_caption("Bonus Level")
+    font = pygame.font.Font(None, 36)
+    background_color = (30, 30, 40)
 
     class Ball:
         def __init__(self, x, y):
@@ -178,7 +191,8 @@ def after(BALL_RADIUS, BALL_COUNT, BALL_SPEED, GAME_DURATION):
             self.angle = random.uniform(0, 2 * math.pi)
             self.speed = pygame.Vector2(math.cos(self.angle), math.sin(self.angle)) * BALL_SPEED / FPS
             self.color = [random.randint(50, 255) for _ in range(3)]
-        def moov(self):
+
+        def move(self):
             self.pos += self.speed
             if self.pos.x - BALL_RADIUS <= 0 or self.pos.x + BALL_RADIUS >= WINDOW_WIDTH:
                 self.speed.x = -self.speed.x
@@ -203,60 +217,110 @@ def after(BALL_RADIUS, BALL_COUNT, BALL_SPEED, GAME_DURATION):
                 return False
         return True
 
-    font_povtor = pygame.font.Font(None, 36)
-    text_surface = font_povtor.render('Привет, мир!', True, (255, 0, 0))
+    # Create balls
     balls = []
-    while len(balls) <   BALL_COUNT:
+    while len(balls) < BALL_COUNT:
         x = random.randint(BALL_RADIUS, WINDOW_WIDTH - BALL_RADIUS)
         y = random.randint(BALL_RADIUS, WINDOW_HEIGHT - BALL_RADIUS)
         if is_position_valid(x, y, balls):
             balls.append(Ball(x, y))
 
     running = True
+    paused = False
     clock = pygame.time.Clock()
     start_time = pygame.time.get_ticks()
-
+    elapsed_game_time = 0  # Game time accounting for pause
     trail = []
     pygame.mouse.set_visible(False)
+
+    # Placeholder for a Pause button class
+    class PauseButton:
+        def __init__(self, x, y, width, height, text, alpha=255):
+            self.rect = pygame.Rect(x, y, width, height)
+
+            self.text = text
+            self.font = pygame.font.Font(None, 24)
+            self.is_clicked = False
+            self.alpha = alpha
+
+        def draw(self, surface):
+
+            button_surface = pygame.Surface((self.rect.width, self.rect.height))
+
+            button_surface.set_alpha(self.alpha)
+
+            if self.is_hovered():
+                button_surface.set_alpha(self.alpha)
+
+            surface.blit(button_surface, self.rect.topleft)
+
+            text_surface = self.font.render(self.text, True, (255, 255, 255))
+            text_rect = text_surface.get_rect(center=self.rect.center)
+            surface.blit(text_surface, text_rect)
+
+        def is_hovered(self):
+            mouse_pos = pygame.mouse.get_pos()
+            return self.rect.collidepoint(mouse_pos)
+
+        def handle_event(self, event):
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if self.rect.collidepoint(pygame.mouse.get_pos()):
+                    return True
+            return False
+    # Create pause button
+    pause_button = PauseButton(460, 0, 40, 40, "| |", alpha=0)
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            if pause_button.handle_event(event):
+                paused = not paused
+                pygame.mouse.set_visible(paused)
+
+        if not paused:
+            current_time = pygame.time.get_ticks()
+            elapsed_game_time += (current_time - start_time) / 1000.0
+            start_time = current_time  # Reset start time
+
+            for ball in balls:
+                ball.move()
+            for i in range(len(balls)):
+                for j in range(i + 1, len(balls)):
+                    balls[i].check_collision(balls[j])
+
+            mouse_pos = pygame.mouse.get_pos()
+            for ball in balls:
+                if ball.pos.distance_to(mouse_pos) < BALL_RADIUS:
+                    running = False
+                    proigral(BALL_RADIUS, BALL_COUNT, BALL_SPEED, GAME_DURATION)
+
+        screen.fill(background_color)
         for ball in balls:
-            ball.moov()
+            ball.draw(screen)
 
-        for i in range(len(balls)):
-            for j in range(i + 1, len(balls)):
-                balls[i].check_collision(balls[j])
-
-        mouse_pos = pygame.mouse.get_pos()
-        for ball in balls:
-            if ball.pos.distance_to(mouse_pos) < BALL_RADIUS:
-                running = False
-                proigral(BALL_RADIUS, BALL_COUNT, BALL_SPEED, GAME_DURATION)
-
+        # Mouse trail
         if len(trail) < TRAIL_LENGTH:
             trail.append(mouse_pos)
         else:
             trail.pop(0)
             trail.append(mouse_pos)
 
-        screen.fill((0, 0, 0))
-        for ball in balls:
-            ball.draw(screen)
-
         for i, pos in enumerate(trail):
-            fade_color = (255, 0, 0, 255 - int((255 / TRAIL_LENGTH) * i))
+            fade_color = (255 - int((255 / TRAIL_LENGTH) * i), 0, 0)
             pygame.draw.circle(screen, fade_color, pos, int(5))
+
+        remaining_time = max(0.0, GAME_DURATION - elapsed_game_time)
+        timer_text = font.render(f"Time: {int(remaining_time)}s", True, (255, 255, 255))
+        screen.blit(timer_text, (10, 10))
+        pause_button.draw(screen)
 
         pygame.display.flip()
         clock.tick(FPS)
 
-        elapsed_time = (pygame.time.get_ticks() - start_time) / 1000
-        if elapsed_time >= GAME_DURATION:
-            running = False
-
     pygame.quit()
+
+
 def proigral(BALL_RADIUS, BALL_COUNT, BALL_SPEED, GAME_DURATION):
     pygame.init()
 
@@ -292,4 +356,5 @@ def proigral(BALL_RADIUS, BALL_COUNT, BALL_SPEED, GAME_DURATION):
 
 
         pygame.display.update()
+    pygame.quit()
 before()
