@@ -169,7 +169,7 @@ def after(BALL_RADIUS, BALL_COUNT, BALL_SPEED, GAME_DURATION):
     import math
 
     pygame.init()
-
+    a,b = random.randint(0, 255), random.randint(0, 255)
     # Constants
     WINDOW_WIDTH = 500
     WINDOW_HEIGHT = 500
@@ -307,7 +307,7 @@ def after(BALL_RADIUS, BALL_COUNT, BALL_SPEED, GAME_DURATION):
             trail.append(mouse_pos)
 
         for i, pos in enumerate(trail):
-            fade_color = (255 - int((255 / TRAIL_LENGTH) * i), 0, 0)
+            fade_color = (255 - int((255 / TRAIL_LENGTH) * i), a, b)
             pygame.draw.circle(screen, fade_color, pos, int(5))
 
         remaining_time = max(0.0, GAME_DURATION - elapsed_game_time)
