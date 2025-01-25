@@ -58,7 +58,7 @@ def before():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if button_meny.is_clicked(event.pos):
                     running = False
-                    subprocess.Popen(["python", "meny.py"])
+
                 if button_s1.is_clicked(event.pos):
                     if sr >= 99:
                         sr = sr

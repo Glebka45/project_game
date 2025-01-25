@@ -91,7 +91,7 @@ class Button:
                 return True
         return False
 
-
+a,b = random.randint(0, 255), random.randint(0, 255)
 balls = []
 while len(balls) < kolichestvo:
     x = random.randint(radioos, WINDOW_WIDTH - radioos)
@@ -149,7 +149,7 @@ while running:
         trail.append(mouse_pos)
 
     for i, pos in enumerate(trail):
-        fade_color = (255 - int((255 / TRAIL_LENGTH) * i), 0, 0)
+        fade_color = (255 - int((255 / TRAIL_LENGTH) * i), a, b)
         pygame.draw.circle(screen, fade_color, pos, int(5))
 
     remaining_time = max(0.0, GAME_DURATION - elapsed_game_time)

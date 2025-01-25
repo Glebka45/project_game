@@ -92,7 +92,7 @@ def level_select_menu():
         Button(150, 290, 200, 50, "Уровень 3", None),
         Button(150, 80, 200, 50, "Бонусный уровень", start_bonus_lvl)
     ]
-    
+
     # Кнопка назад размещается ниже всех кнопок
     back_button = Button(150, 400, 200, 50, "Назад", go_back)
 
