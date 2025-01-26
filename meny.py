@@ -11,9 +11,12 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Меню игры")
 
 # Цвета
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
+WHITE = (245, 245, 245)
+BLACK = (50, 50, 50)
 GRAY = (200, 200, 200)
+DARK_GRAY = (100, 100, 100)
+LIGHT_BLUE = (173, 216, 230)
+DARK_BLUE = (70, 130, 180)
 
 # Шрифты
 font = pygame.font.SysFont('Arial', 25)
@@ -30,8 +33,8 @@ class Button:
         self.action = action
 
     def draw(self, surface):
-        pygame.draw.rect(surface, GRAY, self.rect)
-        pygame.draw.rect(surface, BLACK, self.rect, 2)
+        pygame.draw.rect(surface, LIGHT_BLUE, self.rect, border_radius=10)
+        pygame.draw.rect(surface, DARK_BLUE, self.rect, 3, border_radius=10)
         text_surface = font.render(self.text, True, BLACK)
         text_rect = text_surface.get_rect(center=self.rect.center)
         surface.blit(text_surface, text_rect)
@@ -42,27 +45,19 @@ class Button:
 # Функции действий
 def start_level_1():
     print("Запуск уровня 1")
-    subprocess.Popen(["python", "Level 1.py"])  # Запуск level_1.py
-<<<<<<< Updated upstream
+    subprocess.Popen(["python", "Level 1.py"])
 
-def start_level_1():
-    print("Запуск уровня 1")
-    subprocess.Popen(["python", "Level 2.py"])
-
-def start_level_1():
-    print("Запуск уровня 1")
-    subprocess.Popen(["python", "Level 3.py"]) 
-
-=======
 def start_level_2():
     print("Запуск уровня 2")
-    subprocess.Popen(["python", "Level_2.py"])  # Запуск level_1.py
+    subprocess.Popen(["python", "Level 2.py"])
+
 def start_level_3():
     print("Запуск уровня 3")
-    subprocess.Popen(["python", "Level_3.py"])  # Запуск level_1.py
->>>>>>> Stashed changes
+    subprocess.Popen(["python", "Level 3.py"])
+
 def start_bonus_lvl():
     subprocess.Popen(["python", "Bonus_lvl.py"])
+
 def go_back():
     global current_screen
     current_screen = 'main_menu'
@@ -71,15 +66,22 @@ def level_select_screen():
     global current_screen
     current_screen = 'level_select'
 
+# Фон
+def draw_background():
+    for y in range(0, HEIGHT, 50):
+        for x in range(0, WIDTH, 50):
+            color = LIGHT_BLUE if (x // 50 + y // 50) % 2 == 0 else WHITE
+            pygame.draw.rect(screen, color, (x, y, 50, 50))
+
 # Главное меню
 def main_menu():
     global current_screen
     buttons = [
-        Button(150, 100, 200, 50, "Играть", level_select_screen),
+        Button(150, 150, 200, 50, "Играть", level_select_screen),
     ]
 
     while current_screen == 'main_menu':
-        screen.fill(WHITE)
+        draw_background()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -97,6 +99,11 @@ def main_menu():
         for button in buttons:
             button.draw(screen)
 
+        # Заголовок
+        title_surface = font.render("Главное меню", True, DARK_BLUE)
+        title_rect = title_surface.get_rect(center=(WIDTH // 2, 80))
+        screen.blit(title_surface, title_rect)
+
         pygame.display.flip()
 
 # Экран выбора уровня
@@ -106,7 +113,7 @@ def level_select_menu():
     # Равномерное расположение кнопок для уровня
     level_buttons = [
         Button(150, 150, 200, 50, "Уровень 1", start_level_1),
-        Button(150, 220, 200, 50, "Уровень 2", start_level_2),  # Заглушка для уровня 2
+        Button(150, 220, 200, 50, "Уровень 2", start_level_2),
         Button(150, 290, 200, 50, "Уровень 3", start_level_3),
         Button(150, 80, 200, 50, "Бонусный уровень", start_bonus_lvl)
     ]
@@ -115,7 +122,7 @@ def level_select_menu():
     back_button = Button(150, 400, 200, 50, "Назад", go_back)
 
     while current_screen == 'level_select':
-        screen.fill(WHITE)
+        draw_background()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -137,6 +144,11 @@ def level_select_menu():
 
         # Отображение кнопки назад
         back_button.draw(screen)
+
+        # Заголовок
+        title_surface = font.render("Выбор уровня", True, DARK_BLUE)
+        title_rect = title_surface.get_rect(center=(WIDTH // 2, 40))
+        screen.blit(title_surface, title_rect)
 
         pygame.display.flip()
 
