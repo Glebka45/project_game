@@ -56,24 +56,6 @@ def start_level_3():
     subprocess.Popen(["python", "Level 3.py"])
     subprocess.Popen(["python", "Level 1.py"])  # Запуск level_1.py
 
-
-def start_level_1():
-    print("Запуск уровня 1")
-    subprocess.Popen(["python", "Level 2.py"])
-
-def start_level_1():
-    print("Запуск уровня 1")
-    subprocess.Popen(["python", "Level 3.py"]) 
-
-
-def start_level_2():
-    print("Запуск уровня 2")
-    subprocess.Popen(["python", "Level 2.py"])  # Запуск
-def start_level_3():
-    print("Запуск уровня 3")
-    subprocess.Popen(["python", "Level 3.py"])
-
-
 def start_bonus_lvl():
     subprocess.Popen(["python", "Bonus_lvl.py"])
 
