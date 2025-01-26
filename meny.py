@@ -43,6 +43,24 @@ class Button:
 def start_level_1():
     print("Запуск уровня 1")
     subprocess.Popen(["python", "Level 1.py"])  # Запуск level_1.py
+<<<<<<< Updated upstream
+
+def start_level_1():
+    print("Запуск уровня 1")
+    subprocess.Popen(["python", "Level 2.py"])
+
+def start_level_1():
+    print("Запуск уровня 1")
+    subprocess.Popen(["python", "Level 3.py"]) 
+
+=======
+def start_level_2():
+    print("Запуск уровня 2")
+    subprocess.Popen(["python", "Level_2.py"])  # Запуск level_1.py
+def start_level_3():
+    print("Запуск уровня 3")
+    subprocess.Popen(["python", "Level_3.py"])  # Запуск level_1.py
+>>>>>>> Stashed changes
 def start_bonus_lvl():
     subprocess.Popen(["python", "Bonus_lvl.py"])
 def go_back():
@@ -88,8 +106,8 @@ def level_select_menu():
     # Равномерное расположение кнопок для уровня
     level_buttons = [
         Button(150, 150, 200, 50, "Уровень 1", start_level_1),
-        Button(150, 220, 200, 50, "Уровень 2", None),  # Заглушка для уровня 2
-        Button(150, 290, 200, 50, "Уровень 3", None),
+        Button(150, 220, 200, 50, "Уровень 2", start_level_2),  # Заглушка для уровня 2
+        Button(150, 290, 200, 50, "Уровень 3", start_level_3),
         Button(150, 80, 200, 50, "Бонусный уровень", start_bonus_lvl)
     ]
 
